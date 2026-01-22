@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
   useEffect(() => {
     const projectId = localStorage.getItem('currentProjectId');
     setCurrentProjectId(projectId);
-    
+
     // 加载用户模板列表（用于按需获取File）
     const loadTemplates = async () => {
       try {
@@ -51,6 +51,19 @@ export const Home: React.FC = () => {
       }
     };
     loadTemplates();
+  }, []);
+
+  // 首次访问自动弹出帮助模态框
+  useEffect(() => {
+    const hasSeenHelp = localStorage.getItem('hasSeenHelpModal');
+    if (!hasSeenHelp) {
+      // 延迟500ms打开，让页面先渲染完成
+      const timer = setTimeout(() => {
+        setIsHelpModalOpen(true);
+        localStorage.setItem('hasSeenHelpModal', 'true');
+      }, 500);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleOpenMaterialModal = () => {
