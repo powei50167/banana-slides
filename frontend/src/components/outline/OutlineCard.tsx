@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GripVertical, Edit2, Trash2, Check, X } from 'lucide-react';
 import { useT } from '@/hooks/useT';
+import { useImagePaste } from '@/hooks/useImagePaste';
 import { Card, useConfirm, Markdown, ShimmerOverlay } from '@/components/shared';
+import { MarkdownTextarea, type MarkdownTextareaRef } from '@/components/shared/MarkdownTextarea';
 import type { Page } from '@/types';
 
 // OutlineCard 组件自包含翻译
@@ -9,15 +11,17 @@ const outlineCardI18n = {
   zh: {
     outlineCard: {
       page: "第 {{num}} 页", chapter: "章节", titleLabel: "标题",
-      keyPointsPlaceholder: "要点（每行一个）", confirmDeletePage: "确定要删除这一页吗？",
-      confirmDeleteTitle: "确认删除"
+      keyPointsPlaceholder: "要点（每行一个，支持粘贴图片）", confirmDeletePage: "确定要删除这一页吗？",
+      confirmDeleteTitle: "确认删除",
+      uploadingImage: "正在上传图片..."
     }
   },
   en: {
     outlineCard: {
       page: "Page {{num}}", chapter: "Chapter", titleLabel: "Title",
-      keyPointsPlaceholder: "Key points (one per line)", confirmDeletePage: "Are you sure you want to delete this page?",
-      confirmDeleteTitle: "Confirm Delete"
+      keyPointsPlaceholder: "Key points (one per line, paste images supported)", confirmDeletePage: "Are you sure you want to delete this page?",
+      confirmDeleteTitle: "Confirm Delete",
+      uploadingImage: "Uploading image..."
     }
   }
 };
@@ -25,6 +29,8 @@ const outlineCardI18n = {
 interface OutlineCardProps {
   page: Page;
   index: number;
+  projectId?: string;
+  showToast: (props: { message: string; type: 'success' | 'error' | 'info' | 'warning' }) => void;
   onUpdate: (data: Partial<Page>) => void;
   onDelete: () => void;
   onClick: () => void;
@@ -36,6 +42,8 @@ interface OutlineCardProps {
 export const OutlineCard: React.FC<OutlineCardProps> = ({
   page,
   index,
+  projectId,
+  showToast,
   onUpdate,
   onDelete,
   onClick,
@@ -49,6 +57,19 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
   const [editTitle, setEditTitle] = useState(page.outline_content.title);
   const [editPoints, setEditPoints] = useState(page.outline_content.points.join('\n'));
   const [editPart, setEditPart] = useState(page.part || '');
+  const textareaRef = useRef<MarkdownTextareaRef>(null);
+
+  // Callback to insert at cursor position in the textarea
+  const insertAtCursor = useCallback((markdown: string) => {
+    textareaRef.current?.insertAtCursor(markdown);
+  }, []);
+
+  const { handlePaste, handleFiles, isUploading } = useImagePaste({
+    projectId,
+    setContent: setEditPoints,
+    showToast: showToast,
+    insertAtCursor,
+  });
 
   // 当 page prop 变化时，同步更新本地编辑状态（如果不在编辑模式）
   useEffect(() => {
@@ -85,10 +106,10 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
       onClick={!isEditing ? onClick : undefined}
     >
       <ShimmerOverlay show={isAiRefining} />
-      
+
       <div className="flex items-start gap-3 relative z-10">
         {/* 拖拽手柄 */}
-        <div 
+        <div
           {...dragHandleProps}
           className="flex-shrink-0 cursor-move text-gray-400 hover:text-gray-600 pt-1"
         >
@@ -108,12 +129,12 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
                 value={editPart}
                 onChange={(e) => setEditPart(e.target.value)}
                 onClick={(e) => e.stopPropagation()}
-                className="text-xs px-2 py-0.5 w-24 border border-blue-300 bg-blue-50 dark:bg-blue-900/30 text-blue-700 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="text-xs px-2 py-0.5 w-24 border border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                 placeholder={t('outlineCard.chapter')}
               />
             ) : (
               page.part && (
-                <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">
+                <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded">
                   {page.part}
                 </span>
               )
@@ -127,16 +148,20 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
                 type="text"
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-banana-500"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-border-primary bg-white dark:bg-background-secondary text-gray-900 dark:text-foreground-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-banana-500"
                 placeholder={t('outlineCard.titleLabel')}
               />
-              <textarea
-                value={editPoints}
-                onChange={(e) => setEditPoints(e.target.value)}
-                rows={5}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-banana-500 resize-none"
-                placeholder={t('outlineCard.keyPointsPlaceholder')}
-              />
+              <div>
+                <MarkdownTextarea
+                  ref={textareaRef}
+                  value={editPoints}
+                  onChange={setEditPoints}
+                  onPaste={handlePaste}
+                  onFiles={handleFiles}
+                  rows={5}
+                  placeholder={t('outlineCard.keyPointsPlaceholder')}
+                />
+              </div>
               <div className="flex justify-end gap-2">
                 <button
                   onClick={handleCancel}
@@ -147,7 +172,8 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-3 py-1.5 text-sm bg-banana-500 text-black dark:text-white rounded-lg hover:bg-banana-600 transition-colors"
+                  disabled={isUploading}
+                  className="px-3 py-1.5 text-sm bg-banana-500 text-black dark:text-white rounded-lg hover:bg-banana-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Check size={16} className="inline mr-1" />
                   {t('common.save')}
@@ -199,4 +225,3 @@ export const OutlineCard: React.FC<OutlineCardProps> = ({
     </Card>
   );
 };
-
