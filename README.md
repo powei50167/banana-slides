@@ -557,7 +557,8 @@ banana-slides/
 
 欢迎提出新功能建议或反馈，本人也会~~佛系~~回答大家问题
 
-<img width="312" alt="image" src="https://github.com/user-attachments/assets/16065874-319f-4fc7-9c18-2bd02e27c589" />
+<img width="312" alt="image" src="https://github.com/user-attachments/assets/64c77db3-4880-464b-ab02-3225e48e2ffc" />
+
 
 
 
@@ -594,20 +595,6 @@ banana-slides/
 <details> 
 <summary> 详情 </summary>
 需要商业许可证（Commercial License）（例如：希望闭源使用、私有化部署交付、将本项目集成进闭源产品，或在不公开对应源代码的前提下提供服务），请联系作者：anionex@qq.com
-
- **商业使用**包括但不限于以下场景：
-
-1. 企业或机构内部使用：
-
-2. 对外服务：
-
-3. 其他营利目的使用：
-
-**非商业使用示例**：
-
-- 个人学习、研究、试验、教育或非营利科研活动；
-- 开源社区贡献、个人作品展示等不产生经济收益的用途。
-
 - 联系方式：anionex@qq.com
 </details>
 
