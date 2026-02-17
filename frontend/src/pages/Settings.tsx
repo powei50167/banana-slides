@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home, Key, Image, Zap, Save, RotateCcw, Globe, FileText, Brain } from 'lucide-react';
+import { Home, Key, Image, Zap, Save, RotateCcw, Globe, FileText, Brain, ArrowUp } from 'lucide-react';
 import { useT } from '@/hooks/useT';
 
 // 组件内翻译
@@ -1180,9 +1180,18 @@ export const Settings: React.FC = () => {
 };
 
 // SettingsPage 组件 - 完整页面包装
+const SCROLL_SHOW_THRESHOLD = 300;
+
 export const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
   const t = useT(settingsI18n);
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > SCROLL_SHOW_THRESHOLD);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-banana-50 dark:from-background-primary to-yellow-50 dark:to-background-primary">
@@ -1213,6 +1222,18 @@ export const SettingsPage: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      {showTop && (
+        <button
+          data-testid="back-to-top-button"
+          aria-label="Back to top"
+          title="Back to top"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-6 right-6 p-3 rounded-full bg-banana-500 text-white shadow-lg hover:bg-banana-600 transition-all z-50"
+        >
+          <ArrowUp size={20} />
+        </button>
+      )}
     </div>
   );
 };
