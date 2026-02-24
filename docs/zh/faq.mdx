@@ -1,32 +1,32 @@
 ---
-title: "常见问题"
-description: "常见问题解答"
+title: "常見問題"
+description: "常見問題解答"
 ---
 
-## 生成的文字有乱码或模糊
+## 生成的文字有亂碼或模糊
 
-- 切换到更高分辨率（推荐 2K）。注意：OpenAI 格式可能不支持调高分辨率，建议使用 Gemini 格式。
-- 在页面描述中包含具体要渲染的文字内容。
+- 切換到更高分辨率（推薦 2K）。注意：OpenAI 格式可能不支持調高分辨率，建議使用 Gemini 格式。
+- 在頁面描述中包含具體要渲染的文字內容。
 
-## 可编辑 PPTX 导出效果不佳
+## 可編輯 PPTX 導出效果不佳
 
-通常是 API 配置问题。确保 `BAIDU_OCR_API_KEY` 设置正确。详见[配置说明](/zh/configuration#可编辑-pptx-导出)和 [Issue #121](https://github.com/Anionex/banana-slides/issues/121)。
+通常是 API 配置問題。確保 `BAIDU_OCR_API_KEY` 設置正確。詳見[配置說明](/zh/configuration#可編輯-pptx-導出)和 [Issue #121](https://github.com/Anionex/banana-slides/issues/121)。
 
-## 免费版 Gemini API 能用吗？
+## 免費版 Gemini API 能用嗎？
 
-免费层仅支持文本生成，图片生成需要付费。
+免費層僅支持文本生成，圖片生成需要付費。
 
-## 出现 503 错误或重试错误
+## 出現 503 錯誤或重試錯誤
 
-查看后端日志定位问题：
+查看後端日志定位問題：
 
 ```bash
 docker logs --tail 200 banana-slides-backend
 ```
 
-通常是模型配置不正确导致。
+通常是模型配置不正確導致。
 
-## 修改 .env 后不生效
+## 修改 .env 後不生效
 
-- Docker 部署需重启容器。
-- 如果曾在网页设置页中配置过参数，会覆盖 `.env`，点击"还原默认设置"可恢复。
+- Docker 部署需重啟容器。
+- 如果曾在網頁設置頁中配置過参數，會覆蓋 `.env`，點擊"還原默認設置"可恢複。
