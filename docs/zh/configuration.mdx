@@ -1,20 +1,20 @@
 ---
 title: "配置"
-description: "环境变量与服务商设置"
+description: "環境變量與服務商設置"
 ---
 
-## AI 服务商
+## AI 服務商
 
-在 `.env` 中设置 `AI_PROVIDER_FORMAT` 选择服务商：
+在 `.env` 中設置 `AI_PROVIDER_FORMAT` 選擇服務商：
 
-| 格式 | 说明 |
+| 格式 | 說明 |
 |------|------|
-| `gemini` | Google Gemini API（默认） |
+| `gemini` | Google Gemini API（默認） |
 | `openai` | OpenAI 兼容 API |
 | `vertex` | Google Cloud Vertex AI |
-| `lazyllm` | 多厂商国产模型路由 |
+| `lazyllm` | 多廠商國產模型路由 |
 
-## Gemini（默认）
+## Gemini（默認）
 
 ```env
 AI_PROVIDER_FORMAT=gemini
@@ -23,7 +23,7 @@ GOOGLE_API_BASE=https://generativelanguage.googleapis.com
 ```
 
 <Warning>
-  Gemini API 免费层仅支持文本生成，不支持图片生成。
+  Gemini API 免費層僅支持文本生成，不支持圖片生成。
 </Warning>
 
 ## OpenAI 兼容
@@ -47,9 +47,9 @@ GOOGLE_APPLICATION_CREDENTIALS=./gcp-service-account.json
   `gemini-3-*` 系列模型需要 `VERTEX_LOCATION=global`。
 </Tip>
 
-## LazyLLM（多厂商路由）
+## LazyLLM（多廠商路由）
 
-将请求路由到不同国产 AI 厂商：
+將請求路由到不同國產 AI 廠商：
 
 ```env
 AI_PROVIDER_FORMAT=lazyllm
@@ -58,28 +58,28 @@ IMAGE_MODEL_SOURCE=doubao
 IMAGE_CAPTION_MODEL_SOURCE=qwen
 ```
 
-设置对应厂商的 API Key：
+設置對應廠商的 API Key：
 
 ```env
 DOUBAO_API_KEY=your-key       # 火山引擎/豆包
 DEEPSEEK_API_KEY=your-key     # DeepSeek
-QWEN_API_KEY=your-key         # 阿里云/通义千问
-GLM_API_KEY=your-key          # 智谱 GLM
-SILICONFLOW_API_KEY=your-key  # 硅基流动
-SENSENOVA_API_KEY=your-key    # 商汤日日新
+QWEN_API_KEY=your-key         # 阿裡雲/通義千問
+GLM_API_KEY=your-key          # 智譜 GLM
+SILICONFLOW_API_KEY=your-key  # 硅基流動
+SENSENOVA_API_KEY=your-key    # 商湯日日新
 MINIMAX_API_KEY=your-key      # MiniMax
 ```
 
-## 可编辑 PPTX 导出
+## 可編輯 PPTX 導出
 
-配置百度 OCR 以获得更好的可编辑导出效果（有充足免费额度）：
+配置百度 OCR 以獲得更好的可編輯導出效果（有充足免費額度）：
 
 ```env
 BAIDU_OCR_API_KEY=your-baidu-ocr-key
 ```
 
-从[百度智能云平台](https://console.bce.baidu.com/iam/#/iam/apikey/list)获取 API Key。
+從[百度智能雲平台](https://console.bce.baidu.com/iam/#/iam/apikey/list)獲取 API Key。
 
-## 运行时设置覆盖
+## 運行時設置覆蓋
 
-通过网页设置页面配置的参数会存储在数据库中，优先级高于 `.env`。点击"还原默认设置"可恢复为 `.env` 中的值。
+通過網頁設置頁面配置的参數會存儲在數據庫中，優先級高於 `.env`。點擊"還原默認設置"可恢複為 `.env` 中的值。
